@@ -7,10 +7,22 @@ function App() {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    const saved = localStorage.getItem("todos");
-    if (saved) {
-      setTodos(JSON.parse(saved));
-    }
+    const fetchTodos = async () => {
+      try {
+        const res = await fetch("https://dummyjson.com/todos?limit=5");
+        const data = await res.json();
+        const mapped = data.todos.map((t) => ({
+          id: t.id,
+          text: t.todo,
+          completed: t.completed,
+        }));
+        setTodos(mapped);
+      } catch (error) {
+        console.error("Failed to fetch todos:", error);
+      }
+    };
+
+    fetchTodos();
   }, []);
 
   useEffect(() => {
